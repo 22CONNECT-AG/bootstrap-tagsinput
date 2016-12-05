@@ -337,8 +337,16 @@
             return texts.sort();
           },
           highlighter: function (text) {
-            var regex = new RegExp( '(' + this.query + ')', 'gi' );
-            return text.replace( regex, "<strong>$1</strong>" );
+            var i = text.indexOf("<small");
+            var old = "";
+
+            if (i > 0) {
+                old = text.substring(i, text.length);
+                text = text.substring(0, i - 1);
+            }
+
+            var regex = new RegExp("(" + this.query + ")","gi");
+            return text.replace(regex, "<strong>$1</strong>") + old;
           }
         }));
       }
