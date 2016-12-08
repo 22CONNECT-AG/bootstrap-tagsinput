@@ -59,6 +59,24 @@
   TagsInput.prototype = {
     constructor: TagsInput,
 
+    //generates attributes from initialize options
+    getHtmlAttributes: function (item) {
+        var self = this;
+        if(self.options.itemAttributes==undefined)
+            return '';
+
+        var res = ' ';
+        var itemAttributes = self.options.itemAttributes;
+        for (var e in itemAttributes) {
+            if (typeof itemAttributes[e] !== 'function') {
+                res += e + '="' + itemAttributes[e].toString() + '"';
+            } else {
+                res += e + '="' + itemAttributes[e](item) + '"';
+            }
+        }
+        return res;
+    },
+
     /**
      * Adds the given item as a new tag. Pass true to dontPushVal to prevent
      * updating the elements val()
@@ -135,7 +153,8 @@
 
       // add a tag element
 
-      var $tag = $('<span class="tag ' + htmlEncode(tagClass) + (itemTitle !== null ? ('" title="' + itemTitle) : '') + '">' + htmlEncode(itemText) + '<span data-role="remove"></span></span>');
+      var attrs = self.getHtmlAttributes(item);
+      var $tag = $('<span '+htmlEncode(attrs)+' class="tag ' + htmlEncode(tagClass) + (itemTitle !== null ? ('" title="' + itemTitle) : '') + '">' + htmlEncode(itemText) + '<span data-role="remove"></span></span>');
       $tag.data('item', item);
       self.findInputWrapper().before($tag);
       $tag.after(' ');
